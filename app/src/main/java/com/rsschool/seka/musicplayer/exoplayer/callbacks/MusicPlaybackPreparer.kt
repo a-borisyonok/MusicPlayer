@@ -6,6 +6,7 @@ import android.os.ResultReceiver
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.ControlDispatcher
+import com.google.android.exoplayer2.ForwardingPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.rsschool.seka.musicplayer.exoplayer.MusicSource
@@ -15,13 +16,17 @@ class MusicPlaybackPreparer(
     private val playerPrepared: (MediaMetadataCompat?) -> Unit
 ) : MediaSessionConnector.PlaybackPreparer {
 
+
+
     override fun onCommand(
         player: Player,
         controlDispatcher: ControlDispatcher,
         command: String,
         extras: Bundle?,
         cb: ResultReceiver?
-    ) = false
+    ): Boolean {
+       return  false
+    }
 
     override fun getSupportedPrepareActions(): Long {
         return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or

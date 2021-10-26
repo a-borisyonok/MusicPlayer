@@ -18,7 +18,6 @@ android {
         versionName("1.0")
         vectorDrawables.useSupportLibrary = true
 
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
     }
     buildFeatures {
         viewBinding = true
@@ -39,13 +38,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-//    tasks {
-//        withType<Test> {
-//            useJUnitPlatform {
-//                includeEngines("spek2")
-//            }
-//        }
-//    }
 }
 
 dependencies {
@@ -74,16 +66,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
     // ExoPlayer
-    api ("com.google.android.exoplayer:exoplayer-core:2.11.8")
-    api ("com.google.android.exoplayer:exoplayer-ui:2.11.8")
-    api ("com.google.android.exoplayer:extension-mediasession:2.11.8")
+    api("com.google.android.exoplayer:exoplayer-core:2.15.1")
+    api("com.google.android.exoplayer:exoplayer-ui:2.15.1")
+    api("com.google.android.exoplayer:extension-mediasession:2.15.1")
 
 
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2-native-mt")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.12.0")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 }
 kapt {
     correctErrorTypes = true

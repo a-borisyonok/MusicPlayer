@@ -7,7 +7,9 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -81,9 +83,11 @@ class MusicService : MediaBrowserServiceCompat() {
             MusicPlayerNotificationListener(this)
         ) {
             curSongDuration = exoPlayer.duration
+
         }
 
         val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) {
+
             curPlayingSong = it
             preparePlayer(
                 musicSource.songs,
@@ -100,6 +104,8 @@ class MusicService : MediaBrowserServiceCompat() {
         musicPlayerEventListener = MusicPlayerEventListener(this)
         exoPlayer.addListener(musicPlayerEventListener)
         musicNotificationManager.showNotification(exoPlayer)
+
+
     }
 
     private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
@@ -114,8 +120,17 @@ class MusicService : MediaBrowserServiceCompat() {
         playNow: Boolean
     ) {
         val curSongIndex = if (curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
-        exoPlayer.prepare(musicSource.asMediaSource(dataSourceFactory))
+        exoPlayer.setMediaSource(musicSource.asMediaSource(dataSourceFactory))
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if (playbackState == SimpleExoPlayer.STATE_READY) {
+                    curSongDuration = exoPlayer.duration
+                }
+            }
+        })
+        exoPlayer.prepare()
         exoPlayer.seekTo(curSongIndex, 0L)
+
         exoPlayer.playWhenReady = playNow
     }
 

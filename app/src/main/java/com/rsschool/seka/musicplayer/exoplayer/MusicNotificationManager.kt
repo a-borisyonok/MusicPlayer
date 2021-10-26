@@ -26,19 +26,31 @@ class MusicNotificationManager(
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
-        notificationManager = PlayerNotificationManager.createWithNotificationChannel(
+        //TODO fix deprecated builder
+
+
+        notificationManager = PlayerNotificationManager.Builder(
             context,
-            NOTIFICATION_CHANNEL_ID,
-            R.string.notification_channel_name,
-            R.string.notification_channel_description,
             NOTIFICATION_ID,
-            DescriptionAdapter(mediaController),
-            notificationListener
-        ).apply {
-            setSmallIcon(R.drawable.ic_music)
-            setMediaSessionToken(sessionToken)
-        }
+            NOTIFICATION_CHANNEL_ID,
+
+
+            DescriptionAdapter(mediaController)
+
+        ).build()
+
+
+
+////        PlayerNotificationManager.MediaDescriptionAdapter
+////        PlayerNotificationManager.NotificationListener =
+//        notificationListener
+//
+        notificationManager.setSmallIcon(R.drawable.ic_music)
+        notificationManager.setMediaSessionToken(sessionToken)
+
+
     }
+
 
     fun showNotification(player: Player) {
         notificationManager.setPlayer(player)
