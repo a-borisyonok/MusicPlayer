@@ -1,11 +1,18 @@
 package com.rsschool.seka.musicplayer.exoplayer
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -21,30 +28,34 @@ class MusicNotificationManager(
     notificationListener: PlayerNotificationManager.NotificationListener,
     private val newSongCallback: () -> Unit
 ) {
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String): String{
+        val channel = NotificationChannel(channelId,
+            channelName, NotificationManager.IMPORTANCE_DEFAULT)
+        channel.lightColor = Color.BLUE
+        channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(context, NotificationManager::class.java) as NotificationManager
+        service.createNotificationChannel(channel)
+        return channelId
+    }
     private val notificationManager: PlayerNotificationManager
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
-        //TODO fix deprecated builder
-
-
+        val channelId =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(NOTIFICATION_CHANNEL_ID, "My Background Service")
+            } else {
+              NOTIFICATION_CHANNEL_ID
+            }
         notificationManager = PlayerNotificationManager.Builder(
             context,
             NOTIFICATION_ID,
-            NOTIFICATION_CHANNEL_ID,
+           channelId
+        ).setMediaDescriptionAdapter(DescriptionAdapter(mediaController))
+            .setNotificationListener(notificationListener)
+            .build()
 
-
-            DescriptionAdapter(mediaController)
-
-        ).build()
-
-
-
-////        PlayerNotificationManager.MediaDescriptionAdapter
-////        PlayerNotificationManager.NotificationListener =
-//        notificationListener
-//
         notificationManager.setSmallIcon(R.drawable.ic_music)
         notificationManager.setMediaSessionToken(sessionToken)
 

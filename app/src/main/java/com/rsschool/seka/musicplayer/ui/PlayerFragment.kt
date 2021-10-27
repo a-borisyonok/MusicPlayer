@@ -3,7 +3,6 @@ package com.rsschool.seka.musicplayer.ui
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,10 +41,10 @@ class PlayerFragment : Fragment() {
     ): View = PlayerFragmentBinding.inflate(inflater).also { _binding = it }.root
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(PlayerViewModel::class.java)
+
         subscribeToObservers()
 
         binding.playpauseButton.setOnClickListener {
@@ -58,9 +57,9 @@ class PlayerFragment : Fragment() {
 
         }
 
-        binding.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if(fromUser) {
+                if (fromUser) {
                     setCurPlayerTimeToTextView(progress.toLong())
                 }
             }
@@ -95,10 +94,10 @@ class PlayerFragment : Fragment() {
     private fun subscribeToObservers() {
         viewModel.mediaItems.observe(viewLifecycleOwner) {
             it?.let { result ->
-                when(result.status) {
+                when (result.status) {
                     Status.SUCCESS -> {
                         result.data?.let { songs ->
-                            if(curPlayingSong == null && songs.isNotEmpty()) {
+                            if (curPlayingSong == null && songs.isNotEmpty()) {
                                 curPlayingSong = songs[0]
                                 updateTitleAndSongImage(songs[0])
                             }
@@ -109,33 +108,32 @@ class PlayerFragment : Fragment() {
             }
         }
         viewModel.curPlayingSong.observe(viewLifecycleOwner) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             curPlayingSong = it.toSong()
-            updateTitleAndSongImage(curPlayingSong!!)
+            curPlayingSong?.let { it1 -> updateTitleAndSongImage(it1) }
         }
         viewModel.playbackState.observe(viewLifecycleOwner) {
             playbackState = it
             binding.playpauseButton.setImageResource(
-                if(playbackState?.isPlaying == true) R.drawable.ic_baseline_pause_circle_filled_24 else R.drawable.ic_baseline_play_circle_filled_24
+                if (playbackState?.isPlaying == true) R.drawable.ic_baseline_pause_circle_filled_24 else R.drawable.ic_baseline_play_circle_filled_24
             )
-            binding.seekBar?.progress = it?.position?.toInt() ?: 0
+            binding.seekBar.progress = it?.position?.toInt() ?: 0
         }
         viewModel.curPlayerPosition.observe(viewLifecycleOwner) {
-            if(shouldUpdateSeekbar) {
-                binding.seekBar?.progress  = it.toInt()
+            if (shouldUpdateSeekbar) {
+                binding.seekBar.progress = it.toInt()
                 setCurPlayerTimeToTextView(it)
             }
         }
         viewModel.curSongDuration.observe(viewLifecycleOwner) {
-            Log.i("duration" , it.toString())
-            binding.seekBar?.max = it.toInt()
+            binding.seekBar.max = it.toInt()
             val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-            binding.tvSongDuration?.text = dateFormat.format(it)
+            binding.songDuration.text = dateFormat.format(it)
         }
     }
 
     private fun setCurPlayerTimeToTextView(ms: Long) {
         val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-        binding.tvCurTime?.text = dateFormat.format(ms)
+        binding.currentTime.text = dateFormat.format(ms)
     }
 }

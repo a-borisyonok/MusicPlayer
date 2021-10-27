@@ -4,4 +4,6 @@
     <string name="null_artist">Unknown Artist</string>
     <string name="notification_channel_name">Music Channel</string>
     <string name="notification_channel_description">Shows the currently playing music</string>
+    <string name="zero_time">00:00</string>
+    <string name="null_content_description">Null</string>
 </resources>

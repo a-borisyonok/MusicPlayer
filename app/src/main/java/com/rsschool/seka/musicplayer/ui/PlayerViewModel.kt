@@ -88,7 +88,9 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun onStop() {
-        musicServiceConnection.transportControls.stop()
+        musicServiceConnection.transportControls.pause()
+        seekTo(0L)
+        _curPlayerPosition.postValue(0L)
     }
 
 

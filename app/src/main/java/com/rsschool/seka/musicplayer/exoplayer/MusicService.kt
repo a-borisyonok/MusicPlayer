@@ -1,17 +1,19 @@
 package com.rsschool.seka.musicplayer.exoplayer
 
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -123,11 +125,12 @@ class MusicService : MediaBrowserServiceCompat() {
         exoPlayer.setMediaSource(musicSource.asMediaSource(dataSourceFactory))
         exoPlayer.addListener(object : Player.Listener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                if (playbackState == SimpleExoPlayer.STATE_READY) {
+             if (playbackState == SimpleExoPlayer.STATE_READY) {
                     curSongDuration = exoPlayer.duration
                 }
             }
         })
+
         exoPlayer.prepare()
         exoPlayer.seekTo(curSongIndex, 0L)
 

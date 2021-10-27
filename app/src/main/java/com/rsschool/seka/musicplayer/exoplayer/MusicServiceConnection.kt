@@ -33,6 +33,7 @@ class MusicServiceConnection(
 
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
 
+
     private val mediaBrowser = MediaBrowserCompat(
         context,
         ComponentName(
@@ -91,15 +92,15 @@ class MusicServiceConnection(
         }
     }
 
-    private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
+        private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
 
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            _playbackState.postValue(state)
-        }
+            override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+                _playbackState.postValue(state)
+            }
 
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            _curPlayingSong.postValue(metadata)
-        }
+            override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+                _curPlayingSong.postValue(metadata)
+            }
 
         override fun onSessionEvent(event: String?, extras: Bundle?) {
             super.onSessionEvent(event, extras)
@@ -115,8 +116,9 @@ class MusicServiceConnection(
             }
         }
 
-        override fun onSessionDestroyed() {
-            mediaBrowserConnectionCallback.onConnectionSuspended()
+            override fun onSessionDestroyed() {
+                mediaBrowserConnectionCallback.onConnectionSuspended()
+            }
         }
     }
-}
+
